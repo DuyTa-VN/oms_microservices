@@ -1,0 +1,30 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /user
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/oms?allowPublicKeyRetrieval=true&useSSL=false
+    username: duyta
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/oms
+
+idp:
+  url: http://localhost:8180
+  client_id: oms_api
+  client_secret: Uk5p5zpyPqDkuOhMJAonVNa1KjcE4qjj
