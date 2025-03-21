@@ -113,6 +113,7 @@ public class UserService {
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(String keycloakUserId){
         try{
+            userRepository.deleteByKeycloakUserId(keycloakUserId);
             //Exchange client token
             var token = identityClient.exchangeToken(TokenExchangeParam.builder()
                     .grant_type("client_credentials")
@@ -120,11 +121,9 @@ public class UserService {
                     .client_secret(clientSecret)
                     .scope("openid")
                     .build());
-            log.info("TokenInfo: {}", token);
-
 
             identityClient.deleteUser("Bearer " + token.getAccessToken(), keycloakUserId);
-            userRepository.deleteByKeycloakUserId(keycloakUserId);
+
         }catch (FeignException exception){
             throw errorNormalizer.handleKeyCloakException(exception);
         }
