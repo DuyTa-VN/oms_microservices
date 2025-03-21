@@ -25,6 +25,7 @@ public class ErrorNormalizer {
         errorCodeMap.put("User exists with same username", ErrorCode.USER_EXISTED);
         errorCodeMap.put("User exists with same email", ErrorCode.EMAIL_EXISTED);
         errorCodeMap.put("Username is missing", ErrorCode.USERNAME_IS_MISSING);
+        errorCodeMap.put("Username or Password not valid", ErrorCode.NOT_VALID);
     }
 
     public AppException handleKeyCloakException(FeignException exception){

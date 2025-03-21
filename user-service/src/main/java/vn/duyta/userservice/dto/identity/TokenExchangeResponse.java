@@ -17,6 +17,7 @@ public class TokenExchangeResponse {
     private String accessToken;
     private String expiresIn;
     private String refreshExpiresIn;
+    private String refreshToken;
     private String tokenType;
     private String idToken;
     private String scope;
