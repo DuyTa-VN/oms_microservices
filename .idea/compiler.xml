@@ -11,20 +11,28 @@
         </processorPath>
         <module name="user-service" />
       </profile>
-      <profile name="Annotation profile for gateway" enabled="true">
+      <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
+        <module name="discovery-service" />
+      </profile>
+      <profile name="Annotation profile for product-service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <processorPath>
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
+        <module name="product-service" />
         <module name="gateway" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="21" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="discovery-service" options="-parameters" />
       <module name="gateway" options="-parameters" />
+      <module name="product-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

@@ -1,12 +1,13 @@
 server:
-  port: 8081
+  port: 8082
   servlet:
-    context-path: /user
+    context-path: /product
+
 spring:
   application:
-    name: user-service
+    name: product-service
   datasource:
-    url: jdbc:mysql://localhost:3306/oms?allowPublicKeyRetrieval=true&useSSL=false
+    url: jdbc:mysql://localhost:3306/oms_product?allowPublicKeyRetrieval=true&useSSL=false
     username: duyta
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,19 +15,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8180/realms/oms
-
-idp:
-  url: http://localhost:8180
-  client_id: oms_api
-  client_secret: Uk5p5zpyPqDkuOhMJAonVNa1KjcE4qjj
 
 eureka:
   instance:
