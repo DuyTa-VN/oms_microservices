@@ -17,15 +17,15 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path= /product/api/**
+            - Path= /product/**
 
 eureka:
   client:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/  # Đảm bảo Gateway đăng ký vào Eureka
+      defaultZone: http://localhost:8761/eureka/
   instance:
-    preferIpAddress: false  # Dùng service name thay vì IP
+    preferIpAddress: false
     hostname: localhost
     instanceId: ${spring.application.name}:${server.port}

@@ -3,10 +3,7 @@ package vn.duyta.productservice.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +47,18 @@ public class Product {
     @Column(name = "image_url")
     private List<String> image;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @PrePersist
+    public void handleBeforeCreate(){
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate(){
+        this.updatedAt = LocalDateTime.now();
+    }
 }
