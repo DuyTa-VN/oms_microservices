@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -45,7 +46,7 @@ public class Product {
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
-    private List<String> image;
+    private List<String> image = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

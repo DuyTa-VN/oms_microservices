@@ -5,25 +5,31 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import vn.duyta.productservice.dto.request.CreateProductRequest;
 import vn.duyta.productservice.dto.request.UpdateProductRequest;
 import vn.duyta.productservice.dto.response.CreateProductResponse;
 import vn.duyta.productservice.dto.response.ResultPaginationDTO;
 import vn.duyta.productservice.dto.response.UpdateProductResponse;
 import vn.duyta.productservice.model.Product;
+import vn.duyta.productservice.service.FileService;
 import vn.duyta.productservice.service.ProductService;
 import vn.duyta.productservice.util.annotation.ApiMessage;
 import vn.duyta.productservice.util.error.IdInvalidException;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private final FileService fileService;
 
     @PostMapping
     @ApiMessage("Create a product")
@@ -40,11 +46,13 @@ public class ProductController {
         return ResponseEntity.ok().body(this.productService.handleUpdateProduct(id, request));
     }
 
-    @GetMapping
+    @GetMapping("/search")
     @ApiMessage("Fetch all products")
-    public ResponseEntity<ResultPaginationDTO> getAllProducts(@Filter Specification<Product> spec, Pageable pageable) {
+    public ResponseEntity<ResultPaginationDTO> getAllProducts(
+            @Filter Specification<Product> spec,
+            Pageable pageable) {
 
-        return ResponseEntity.ok().body(this.productService.handleGetProduct(spec, pageable));
+        return ResponseEntity.ok().body(this.productService.handleGetAllProduct(spec, pageable));
     }
 
     @GetMapping("/{id}")
@@ -63,4 +71,5 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
 }

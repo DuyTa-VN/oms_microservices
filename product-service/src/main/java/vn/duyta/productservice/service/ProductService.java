@@ -23,6 +23,7 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final FileService fileService;
 
     public CreateProductResponse handleCreateProduct(CreateProductRequest request){
         Product product = productMapper.toProduct(request);
@@ -43,7 +44,7 @@ public class ProductService {
         return productMapper.toUpdateProduct(updatedProduct);
     }
 
-    public ResultPaginationDTO handleGetProduct(Specification<Product> spec, Pageable pageable){
+    public ResultPaginationDTO handleGetAllProduct(Specification<Product> spec, Pageable pageable){
         Page<Product> pageProduct = this.productRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();

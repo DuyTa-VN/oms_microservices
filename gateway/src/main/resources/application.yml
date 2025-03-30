@@ -18,6 +18,22 @@ spring:
           uri: lb://product-service
           predicates:
             - Path= /product/**
+      default-filters:
+        - TokenRelay
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/auth/realms/oms
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: oms_api
+            client-secret: Uk5p5zpyPqDkuOhMJAonVNa1KjcE4qjj
+            authorization-grant-type: authorization_code
+
+
 
 eureka:
   client:
