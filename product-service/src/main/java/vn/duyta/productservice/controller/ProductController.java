@@ -1,13 +1,17 @@
 package vn.duyta.productservice.controller;
 
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.duyta.productservice.dto.request.CreateProductRequest;
 import vn.duyta.productservice.dto.request.UpdateProductRequest;
 import vn.duyta.productservice.dto.response.CreateProductResponse;
+import vn.duyta.productservice.dto.response.ResultPaginationDTO;
 import vn.duyta.productservice.dto.response.UpdateProductResponse;
 import vn.duyta.productservice.model.Product;
 import vn.duyta.productservice.service.ProductService;
@@ -38,8 +42,19 @@ public class ProductController {
 
     @GetMapping
     @ApiMessage("Fetch all products")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok().body(this.productService.fetchAllProducts());
+    public ResponseEntity<ResultPaginationDTO> getAllProducts(@Filter Specification<Product> spec, Pageable pageable) {
+
+        return ResponseEntity.ok().body(this.productService.handleGetProduct(spec, pageable));
+    }
+
+    @GetMapping("/{id}")
+    @ApiMessage("Fetch product by ID")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") long id) throws IdInvalidException{
+        Product fetchProduct = this.productService.fetchProductById(id);
+        if (fetchProduct == null) {
+            throw new IdInvalidException("Product with id = " + id + " not found");
+        }
+        return ResponseEntity.ok().body(fetchProduct);
     }
 
     @DeleteMapping("/{id}")

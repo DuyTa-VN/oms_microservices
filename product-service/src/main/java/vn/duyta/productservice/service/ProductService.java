@@ -1,18 +1,22 @@
 package vn.duyta.productservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.duyta.productservice.dto.request.CreateProductRequest;
 import vn.duyta.productservice.dto.request.UpdateProductRequest;
 import vn.duyta.productservice.dto.response.CreateProductResponse;
+import vn.duyta.productservice.dto.response.ResultPaginationDTO;
 import vn.duyta.productservice.dto.response.UpdateProductResponse;
 import vn.duyta.productservice.mapper.ProductMapper;
 import vn.duyta.productservice.model.Product;
 import vn.duyta.productservice.repository.ProductRepository;
 import vn.duyta.productservice.util.error.IdInvalidException;
 
-import java.util.List;
 import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +43,26 @@ public class ProductService {
         return productMapper.toUpdateProduct(updatedProduct);
     }
 
-    public List<Product> fetchAllProducts(){
-        return productRepository.findAll();
+    public ResultPaginationDTO handleGetProduct(Specification<Product> spec, Pageable pageable){
+        Page<Product> pageProduct = this.productRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+
+        mt.setPages(pageProduct.getTotalPages());
+        mt.setTotal(pageProduct.getTotalElements());
+
+        rs.setMeta(mt);
+        rs.setResult(pageProduct.getContent());
+
+        return rs;
+    }
+
+    public Product fetchProductById(long id) throws IdInvalidException {
+        Optional<Product> optionalProduct = this.productRepository.findById(id);
+        return optionalProduct.orElse(null);
     }
 
     public void deleteProduct(long id) throws IdInvalidException{
