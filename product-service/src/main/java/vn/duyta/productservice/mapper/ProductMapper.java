@@ -11,7 +11,7 @@ import vn.duyta.productservice.model.Product;
 public interface ProductMapper {
     UpdateProductResponse toUpdateProduct(Product product);
 
-    @Mapping(target = "images", source = "images")
+    @Mapping(target = "image", source = "image")
     Product toProduct(CreateProductRequest request);
 
     CreateProductResponse toCreateProductResponse(Product product);

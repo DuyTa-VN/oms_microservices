@@ -5,6 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,7 @@ public class Product {
     private String description;
 
     @NotNull
-    @DecimalMin(value = "0", inclusive = false, message = "Price must be greater than 0 ")
-    private double price;
+    private BigDecimal price;
 
     @Column(nullable = false, unique = true)
     private String sku;

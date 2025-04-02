@@ -4,6 +4,7 @@ import jakarta.validation.constraints.DecimalMin;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -11,9 +12,7 @@ import java.util.List;
 public class UpdateProductRequest {
     private String name;
     private String description;
-
-    @DecimalMin(value = "0", message = "Price must be than 0")
-    private double price;
+    private BigDecimal price;
 
     private long quantity;
     private List<String> images;

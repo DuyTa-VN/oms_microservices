@@ -16,10 +16,18 @@ spring:
             - Path= /user/**
           filters:
             - TokenRelay=
+
         - id: product-service
           uri: lb://product-service
           predicates:
             - Path= /product/**
+          filters:
+            - TokenRelay=
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path= /order/**
           filters:
             - TokenRelay=
   security:

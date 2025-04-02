@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 @Getter
@@ -13,7 +14,7 @@ public class UpdateProductResponse {
     private long id;
     private String name;
     private String description;
-    private double price;
+    private BigDecimal price;
     private String sku;
     private String brand;
     private String category;

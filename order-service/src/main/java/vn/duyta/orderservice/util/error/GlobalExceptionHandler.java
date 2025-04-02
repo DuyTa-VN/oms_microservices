@@ -20,7 +20,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             UsernameNotFoundException.class,
             BadCredentialsException.class,
-            IdInvalidException.class
+            IdInvalidException.class,
+            OrderNotFoundException.class
     })
 
     public ResponseEntity<RestResponse<Object>> handleIdException(Exception ex){

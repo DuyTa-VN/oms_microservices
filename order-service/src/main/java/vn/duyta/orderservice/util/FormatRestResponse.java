@@ -8,10 +8,11 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import vn.duyta.orderservice.dto.response.RestResponse;
 import vn.duyta.orderservice.util.annotation.ApiMessage;
-
+@ControllerAdvice
 public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
     @Override
