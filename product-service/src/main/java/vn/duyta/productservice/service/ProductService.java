@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import vn.duyta.productservice.dto.request.CreateProductRequest;
 import vn.duyta.productservice.dto.request.UpdateProductRequest;
 import vn.duyta.productservice.dto.response.CreateProductResponse;
+import vn.duyta.productservice.dto.response.ProductResponse;
 import vn.duyta.productservice.dto.response.ResultPaginationDTO;
 import vn.duyta.productservice.dto.response.UpdateProductResponse;
 import vn.duyta.productservice.mapper.ProductMapper;
@@ -61,9 +62,11 @@ public class ProductService {
         return rs;
     }
 
-    public Product fetchProductById(long id) throws IdInvalidException {
-        Optional<Product> optionalProduct = this.productRepository.findById(id);
-        return optionalProduct.orElse(null);
+    public ProductResponse fetchProductById(long id) throws IdInvalidException {
+        Product product = this.productRepository.findById(id)
+                .orElseThrow(() -> new IdInvalidException("Product with id = " + id + " not found"));
+        ProductResponse response = productMapper.toProductResponse(product);
+        return response;
     }
 
     public void deleteProduct(long id) throws IdInvalidException{

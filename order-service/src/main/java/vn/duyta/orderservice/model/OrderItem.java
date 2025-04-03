@@ -23,7 +23,7 @@ public class OrderItem {
 
     private Long productId;
     private String productName;
-    private Integer quantity;
+    private long quantity;
     private BigDecimal price;
 }
 

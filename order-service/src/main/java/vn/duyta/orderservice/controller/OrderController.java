@@ -13,7 +13,7 @@ import vn.duyta.orderservice.dto.request.OrderRequest;
 import vn.duyta.orderservice.dto.response.OrderResponse;
 import vn.duyta.orderservice.service.OrderService;
 import vn.duyta.orderservice.util.annotation.ApiMessage;
-import vn.duyta.orderservice.util.error.OrderNotFoundException;
+import vn.duyta.orderservice.util.error.IdInvalidException;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> createOrder(
             @Valid @RequestBody OrderRequest orderRequest,
             @AuthenticationPrincipal Jwt jwt
-            ){
+            ) throws IdInvalidException {
         OrderResponse orderResponse = this.orderService.createOrder(orderRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);
     }

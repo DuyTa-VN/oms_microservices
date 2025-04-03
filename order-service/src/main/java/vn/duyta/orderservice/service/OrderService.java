@@ -1,9 +1,13 @@
 package vn.duyta.orderservice.service;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import vn.duyta.orderservice.dto.client.ProductResponse;
 import vn.duyta.orderservice.dto.request.OrderRequest;
 import vn.duyta.orderservice.dto.response.OrderResponse;
 import vn.duyta.orderservice.mapper.OrderMapper;
@@ -20,50 +24,49 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final ProductClient productClient;
 
     // create order
-    public OrderResponse createOrder(OrderRequest request){
-        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String keycloakUserId = jwt.getSubject();
+    public OrderResponse createOrder(OrderRequest request) throws IdInvalidException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String keycloakUserId = authentication.getName();
 
-
-
-        List<OrderItem> items = request.getItems().stream()
-                .map(itemRequest -> {
-                    ProductClient.ProductResponse product = productClient.getProduct(itemRequest.getProductId());
-                    System.out.println("Product API Response: " + product);
-
-                    if (product == null) {
-                        throw new IllegalArgumentException("Product with id = " + itemRequest.getProductId() + " not found");
-                    }
-
-                    BigDecimal price = product.getPrice() != null ? product.getPrice() : BigDecimal.ZERO;
-                    return OrderItem.builder()
-                            .productId(product.getId())
-                            .quantity(itemRequest.getQuantity())
-                            .price(price)
-                            .productName(product.getName())
-                            .build();
-                })
-                .toList();
-
-        BigDecimal totalPrice = items.stream()
-                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        List<OrderItem> orderItems = new ArrayList<>();
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (OrderRequest.OrderItemRequest item : request.getItems()) {
+            try {
+                ProductResponse product = productClient.getProductById(item.getProductId());
+                if (item.getProductId() == null){
+                    throw new IdInvalidException("Product ID is null");
+                }
+                if (product.getPrice() == null){
+                    throw new IdInvalidException("Product price is null for product ID: " + item.getProductId());
+                }
+                OrderItem orderItem = OrderItem.builder()
+                        .productId(product.getId())
+                        .quantity(item.getQuantity())
+                        .productName(product.getName())
+                        .price(product.getPrice())
+                        .build();
+                orderItems.add(orderItem);
+                totalPrice = totalPrice.add(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+            } catch (FeignException e) {
+                log.error("Error fetching product with ID {}: {}", item.getProductId(), e.getMessage());
+                throw new IdInvalidException("Product not found");
+            }
+        }
 
         Order order = Order.builder()
                 .keycloakUserId(keycloakUserId)
-                .status(OrderStatus.PENDING)
-                .items(items)
+                .items(orderItems)
                 .totalPrice(totalPrice)
+                .status(OrderStatus.PENDING)
                 .build();
-
-        return orderMapper.toOrderResponse(this.orderRepository.save(order));
-
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toOrderResponse(savedOrder);
     }
-
 }
